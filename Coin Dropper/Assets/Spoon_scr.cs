@@ -26,6 +26,14 @@ public class Spoon_scr : MonoBehaviour {
         transform.rotation = Quaternion.Euler(0, 0, -transform.parent.rotation.z);
     }
 
+    void Release()
+    {
+        if (coin != null)
+        {
+            coin.SendMessage("BeFree");
+            coin = null;
+        }
+    }
  
 
 }

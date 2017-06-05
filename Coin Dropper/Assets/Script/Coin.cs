@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    bool down, right, left, stop;
-    float speed = 0.05f;
+    bool down, right, left, stop, follow;
+    float speed = 0.1f;
+    Vector3 target = new Vector3(0, 0, 0);
     // Use this for initialization
     void Start()
     {
+        //At start, the coin needs to follow the mouse position but stay at starting point
+        //everything needs to be false at the coin has yet to roll
+        //once player click, the coin drop 
+        transform.parent = GameObject.FindGameObjectWithTag("Central").transform;
+
+        follow = true;
         down = true;
         right = false;
         left = false;
@@ -18,17 +25,55 @@ public class Coin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (follow)
+        {
+            Follow();
+            if (Input.GetMouseButtonDown(0))
+            {
+                Drop();
+            }
+
+
+            return;
+        }
         if (stop)
         {
-            return;
+            if (Vector3.Distance(transform.position, target) < 0.3f)
+            {
+                stop = false; 
+                return;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y - speed, 0);
+            }
         }
         if (left)
         {
-            transform.position = new Vector3(transform.position.x - speed, transform.position.y - speed, 0);
+            if (Vector3.Distance(transform.position, target) < 0.15f)
+            {
+                transform.position = target;
+                left = false;
+                down = true;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x - speed, transform.position.y - speed, 0);
+            }
         }
         if (right)
         {
-            transform.position = new Vector3(transform.position.x + speed, transform.position.y - speed, 0);
+            if (Vector3.Distance(transform.position, target) < 0.15f)
+            {
+                transform.position = target;
+                right = false;
+                down = true;
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x + speed, transform.position.y - speed, 0);
+            }
+            
         }
         if (down)
         {
@@ -36,17 +81,39 @@ public class Coin : MonoBehaviour
         }
     }
 
+    void Follow()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        transform.position = new Vector2(Mathf.RoundToInt(mousePosition.x+0.5f)-0.5f, 3);
+        if(transform.position.x < -0.5f)
+        {
+            transform.position = new Vector2( -0.5f, 3);
+        }
+        if (transform.position.x > 6.5f)
+        {
+            transform.position = new Vector2(6.5f, 3);
+        }
+    }
+
+    void Drop()
+    {
+        follow = false;
+        transform.parent.SendMessage("AddMoving");
+    }
 
     void TurnLeft()
     {
         down = false;
         left = true;
+        target = new Vector3(transform.position.x - 1f, transform.position.y - 1f, transform.position.z);
     }
 
     void TurnRight()
     {
         down = false;
         right = true;
+        target = new Vector3(transform.position.x + 1f, transform.position.y - 1f, transform.position.z);
     }
 
     void CancelTurn()
@@ -54,6 +121,13 @@ public class Coin : MonoBehaviour
         down = true;
         left = false;
         right = false;
+    }
+
+    void BeFree()
+    {
+        stop = false;
+        down = true;
+        transform.parent.gameObject.SendMessage("AddMoving");
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -67,29 +141,46 @@ public class Coin : MonoBehaviour
             //Hit switch
             other.gameObject.SendMessage("ActivateSwitch");
         }
+        if(other.tag == "Goal")
+        {
+            other.gameObject.SendMessage("AddScore");
+            StopOrder(other.transform.position);
+            //Play Reach goal animation;
+            Invoke("Finish", 1);
+        }
         if (other.tag == "Spoon")
         {
             Spoon_scr scr = other.gameObject.GetComponent<Spoon_scr>();
             if (scr.coin == null)
             {
-                stop = true;
-                down = false;
+                StopOrder(other.transform.position);
                 scr.coin = gameObject;
             }
             else
             {
                 bool dir = other.transform.GetComponentInParent<Switch>().getDir();
-                if (right)
+                if (dir)
                 {
-                    right = true;
-                    down = false;
+                    TurnRight();
                 }
                 else
                 {
-                    left = true;
-                    down = false;
+                    TurnLeft();
                 }
             }
         }
+    }
+
+    void Finish()
+    {
+        Destroy(gameObject);
+    }
+
+    private void StopOrder(Vector3 t)
+    {
+        target = t;
+        stop = true;
+        down = false;
+        transform.parent.gameObject.SendMessage("MinusMoving");
     }
 }

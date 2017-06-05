@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coin Dropper", "Coin Dropper.csproj", "{7ABCEED8-F87B-2B19-00CE-9A178ED1275D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coin Dropper.Editor", "Coin Dropper.Editor.csproj", "{51BB9D7D-050F-9123-5FF3-FA59A40267DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{7ABCEED8-F87B-2B19-00CE-9A178ED1275D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ABCEED8-F87B-2B19-00CE-9A178ED1275D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ABCEED8-F87B-2B19-00CE-9A178ED1275D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51BB9D7D-050F-9123-5FF3-FA59A40267DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BB9D7D-050F-9123-5FF3-FA59A40267DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BB9D7D-050F-9123-5FF3-FA59A40267DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BB9D7D-050F-9123-5FF3-FA59A40267DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -144,7 +144,7 @@ public class Coin : MonoBehaviour
         if(other.tag == "Goal")
         {
             other.gameObject.SendMessage("AddScore");
-            StopOrder(other.transform.position);
+           // StopOrder(other.transform.position);
             //Play Reach goal animation;
             Invoke("Finish", 1);
         }
@@ -173,6 +173,7 @@ public class Coin : MonoBehaviour
 
     void Finish()
     {
+        transform.parent.gameObject.SendMessage("MinusMoving");
         Destroy(gameObject);
     }
 
